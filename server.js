@@ -1,11 +1,16 @@
 const jsonServer = require('json-server')
 const jsonServerAuth = require('json-server-auth')
 const path = require('path')
-const express = require('express')
+const fs = require('fs')
 
 const server = jsonServer.create()
 const router = jsonServer.router('db.json')
-const middlewares = jsonServer.defaults()
+const distPath = path.join(__dirname, 'dist')
+
+// Configurar middlewares para que la raíz estática sea la carpeta dist compilada de Vue 3
+const middlewares = jsonServer.defaults({
+  static: distPath
+})
 
 server.use(middlewares)
 server.use(jsonServerAuth)
@@ -14,11 +19,14 @@ server.use(jsonServerAuth)
 server.db = router.db
 server.use(router)
 
-// Servir frontend compilado en producción (dist)
-const distPath = path.join(__dirname, 'dist')
-server.use(express.static(distPath))
-server.get('*', (req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'))
+// Fallback para SPA en Vue Router (HTML5 History Mode)
+server.use((req, res, next) => {
+  const indexPath = path.join(distPath, 'index.html')
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath)
+  } else {
+    next()
+  }
 })
 
 const PORT = process.env.PORT || 3000
