@@ -5,29 +5,38 @@ const fs = require('fs')
 
 const server = jsonServer.create()
 const router = jsonServer.router('db.json')
-const distPath = path.join(__dirname, 'dist')
+const distPath = path.resolve(__dirname, 'dist')
+const indexPath = path.join(distPath, 'index.html')
 
-// 1. Configurar middlewares para que la raíz estática sea la carpeta dist compilada de Vue 3
+// 1. Vincular router db a la app para jsonServerAuth
+server.db = router.db
+
+// 2. Middlewares estándar de json-server (CORS, logger, bodyParser) y archivos estáticos
 const middlewares = jsonServer.defaults({
   static: distPath
 })
-
 server.use(middlewares)
-server.use(jsonServerAuth)
-
-// 2. Vincular router db a la app
-server.db = router.db
-server.use(router)
 
 // 3. Fallback para SPA en Vue Router (HTML5 History Mode)
+// Si el navegador solicita una página HTML o una ruta que no es de la API, servimos index.html
 server.use((req, res, next) => {
-  const indexPath = path.join(distPath, 'index.html')
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath)
-  } else {
-    next()
+  const isHtmlRequest = req.headers.accept && req.headers.accept.includes('text/html')
+  const isApiCollection = ['/users', '/medicos', '/citas'].some(ep => req.path.startsWith(ep))
+  const isStaticAsset = req.path.startsWith('/assets') || req.path.includes('.')
+
+  if (req.method === 'GET' && (isHtmlRequest || (!isApiCollection && !isStaticAsset))) {
+    if (fs.existsSync(indexPath)) {
+      return res.sendFile(indexPath)
+    }
   }
+  next()
 })
+
+// 4. Middleware de autenticación (POST /login, POST /register)
+server.use(jsonServerAuth)
+
+// 5. Router de la base de datos (GET, POST, PUT, DELETE para /users, /medicos, /citas)
+server.use(router)
 
 const PORT = process.env.PORT || 3000
 server.listen(PORT, '0.0.0.0', () => {
