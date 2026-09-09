@@ -1,0 +1,14 @@
+{
+  "users": {
+    "plural": "users",
+    "singular": "user"
+  },
+  "citas": {
+    "plural": "citas",
+    "singular": "cita"
+  },
+  "medicos": {
+    "plural": "medicos",
+    "singular": "medico"
+  }
+}

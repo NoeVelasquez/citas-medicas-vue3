@@ -1,0 +1,176 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@saludplus.com",
+      "password": "$2a$10$2NqDep/vCDmuX8vY.pRCouzL9zu0i/rdbAcEmLyxgF59MOU./KFai",
+      "name": "Dra. Administradora"
+    },
+    {
+      "id": 2,
+      "email": "recepcion@saludplus.com",
+      "password": "$2a$10$2NqDep/vCDmuX8vY.pRCouzL9zu0i/rdbAcEmLyxgF59MOU./KFai",
+      "name": "Recepcionista Principal"
+    },
+    {
+      "email": "noemi@test.com",
+      "password": "$2a$10$jfmAMtWsdmpf4XE81Noz6OaUuJLpvNJL8ruAu8Mx0bVXIAWJ8E5sm",
+      "name": "Noemi Vera",
+      "id": 3
+    },
+    {
+      "email": "valeria.mendoza@saludplus.com",
+      "password": "$2a$10$x2.GztWocCkYz7j7etlfPOBJI5FMs0ii8NlLBIMP6G2gTBot1F7dC",
+      "name": "Dra. Valeria Mendoza",
+      "rol": "medico",
+      "medicoId": 1,
+      "id": 4
+    },
+    {
+      "email": "carlos.rodriguez@saludplus.com",
+      "password": "$2a$10$JtnntZk7m9Qrhl0cgY.z/.nw88e/cRCzhtySbWdQQV5OZc2HLmTta",
+      "name": "Dr. Carlos Rodríguez",
+      "rol": "medico",
+      "medicoId": 2,
+      "id": 5
+    },
+    {
+      "email": "mariana.silva@saludplus.com",
+      "password": "$2a$10$I9gEjK9EqXD4F1BCR5o7CeKlHM4cI7bXqr14vOBnrZ0sYIjUdjSJO",
+      "name": "Dra. Mariana Silva",
+      "rol": "medico",
+      "medicoId": 3,
+      "id": 6
+    },
+    {
+      "email": "rosio@test.com",
+      "password": "$2a$10$lNFztPr1HuiLJx9XYv6I5eAWCE4pLUOcMGNZutflKpegH0C2vHbM2",
+      "name": "Noemi Rosio Vera Velasquez",
+      "rol": "medico",
+      "medicoId": 6,
+      "id": 7
+    }
+  ],
+  "medicos": [
+    {
+      "id": 1,
+      "nombre": "Dra. Valeria Mendoza",
+      "especialidad": "Cardiología",
+      "email": "valeria.mendoza@saludplus.com",
+      "telefono": "71234567",
+      "color": "#3B82F6"
+    },
+    {
+      "id": 2,
+      "nombre": "Dr. Carlos Rodríguez",
+      "especialidad": "Pediatría",
+      "email": "carlos.rodriguez@saludplus.com",
+      "telefono": "79876543",
+      "color": "#10B981"
+    },
+    {
+      "id": 3,
+      "nombre": "Dra. Mariana Silva",
+      "especialidad": "Dermatología",
+      "email": "mariana.silva@saludplus.com",
+      "telefono": "72345678",
+      "color": "#EC4899"
+    },
+    {
+      "id": 4,
+      "nombre": "Dr. Fernando Morales",
+      "especialidad": "Traumatología",
+      "email": "fernando.morales@saludplus.com",
+      "telefono": "78901234",
+      "color": "#F59E0B"
+    },
+    {
+      "id": 5,
+      "nombre": "Dra. Lucía Fernández",
+      "especialidad": "Neurología",
+      "email": "lucia.fernandez@saludplus.com",
+      "telefono": "74567890",
+      "color": "#8B5CF6"
+    },
+    {
+      "nombre": "Noemi Rosio Vera Velasquez",
+      "especialidad": "kinesiologa",
+      "email": "rosio@test.com",
+      "telefono": "78836023",
+      "color": "#8B5CF6",
+      "id": 6
+    }
+  ],
+  "citas": [
+    {
+      "id": 1,
+      "paciente": "Alejandro Gómez",
+      "medicoId": 1,
+      "fecha": "2026-09-15",
+      "hora": "09:30",
+      "motivo": "Control de hipertensión y chequeo preventivo",
+      "estado": "Atendida",
+      "costo": 200
+    },
+    {
+      "id": 2,
+      "paciente": "Camila Suárez",
+      "medicoId": 2,
+      "fecha": "2026-09-15",
+      "hora": "11:00",
+      "motivo": "Revisión médica pediátrica y vacunas",
+      "estado": "Pendiente",
+      "costo": 180
+    },
+    {
+      "id": 3,
+      "paciente": "Roberto Quiroga",
+      "medicoId": 3,
+      "fecha": "2026-09-16",
+      "hora": "15:00",
+      "motivo": "Evaluación de alergia cutánea y tratamiento dermatológico",
+      "estado": "Pendiente",
+      "costo": 220
+    },
+    {
+      "id": 4,
+      "paciente": "Elena Ramos",
+      "medicoId": 4,
+      "fecha": "2026-09-17",
+      "hora": "10:15",
+      "motivo": "Dolor en articulación de rodilla izquierda post-entrenamiento",
+      "estado": "Pendiente",
+      "costo": 250
+    },
+    {
+      "id": 5,
+      "paciente": "Gabriel Mercado",
+      "medicoId": 5,
+      "fecha": "2026-09-18",
+      "hora": "16:30",
+      "motivo": "Migrañas recurrentes y consulta neurológica",
+      "estado": "Confirmada",
+      "costo": 300
+    },
+    {
+      "id": 6,
+      "paciente": "Sofía Morales",
+      "medicoId": 1,
+      "fecha": "2026-09-20",
+      "hora": "08:45",
+      "motivo": "Ecocardiograma y revisión general de rutina",
+      "estado": "Cancelada",
+      "costo": 200
+    },
+    {
+      "paciente": "noemi Vera",
+      "medicoId": 3,
+      "fecha": "2026-09-09",
+      "hora": "09:00",
+      "motivo": "problemaqs respiratorios",
+      "estado": "Confirmada",
+      "costo": 190,
+      "id": 7
+    }
+  ]
+}
