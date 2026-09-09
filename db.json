@@ -3,24 +3,24 @@
     {
       "id": 1,
       "email": "admin@saludplus.com",
-      "password": "$2a$10$2NqDep/vCDmuX8vY.pRCouzL9zu0i/rdbAcEmLyxgF59MOU./KFai",
+      "password": "$2a$10$t5pjJm/sExtSHcKRGhkTC.1GyqQT3qGngQ4PlSS23UMOjVIR/oPY2",
       "name": "Dra. Administradora"
     },
     {
       "id": 2,
       "email": "recepcion@saludplus.com",
-      "password": "$2a$10$2NqDep/vCDmuX8vY.pRCouzL9zu0i/rdbAcEmLyxgF59MOU./KFai",
+      "password": "$2a$10$t5pjJm/sExtSHcKRGhkTC.1GyqQT3qGngQ4PlSS23UMOjVIR/oPY2",
       "name": "Recepcionista Principal"
     },
     {
       "email": "noemi@test.com",
-      "password": "$2a$10$jfmAMtWsdmpf4XE81Noz6OaUuJLpvNJL8ruAu8Mx0bVXIAWJ8E5sm",
+      "password": "$2a$10$t5pjJm/sExtSHcKRGhkTC.1GyqQT3qGngQ4PlSS23UMOjVIR/oPY2",
       "name": "Noemi Vera",
       "id": 3
     },
     {
       "email": "valeria.mendoza@saludplus.com",
-      "password": "$2a$10$x2.GztWocCkYz7j7etlfPOBJI5FMs0ii8NlLBIMP6G2gTBot1F7dC",
+      "password": "$2a$10$t5pjJm/sExtSHcKRGhkTC.1GyqQT3qGngQ4PlSS23UMOjVIR/oPY2",
       "name": "Dra. Valeria Mendoza",
       "rol": "medico",
       "medicoId": 1,
@@ -28,7 +28,7 @@
     },
     {
       "email": "carlos.rodriguez@saludplus.com",
-      "password": "$2a$10$JtnntZk7m9Qrhl0cgY.z/.nw88e/cRCzhtySbWdQQV5OZc2HLmTta",
+      "password": "$2a$10$t5pjJm/sExtSHcKRGhkTC.1GyqQT3qGngQ4PlSS23UMOjVIR/oPY2",
       "name": "Dr. Carlos Rodríguez",
       "rol": "medico",
       "medicoId": 2,
@@ -36,7 +36,7 @@
     },
     {
       "email": "mariana.silva@saludplus.com",
-      "password": "$2a$10$I9gEjK9EqXD4F1BCR5o7CeKlHM4cI7bXqr14vOBnrZ0sYIjUdjSJO",
+      "password": "$2a$10$t5pjJm/sExtSHcKRGhkTC.1GyqQT3qGngQ4PlSS23UMOjVIR/oPY2",
       "name": "Dra. Mariana Silva",
       "rol": "medico",
       "medicoId": 3,
@@ -44,7 +44,7 @@
     },
     {
       "email": "rosio@test.com",
-      "password": "$2a$10$lNFztPr1HuiLJx9XYv6I5eAWCE4pLUOcMGNZutflKpegH0C2vHbM2",
+      "password": "$2a$10$t5pjJm/sExtSHcKRGhkTC.1GyqQT3qGngQ4PlSS23UMOjVIR/oPY2",
       "name": "Noemi Rosio Vera Velasquez",
       "rol": "medico",
       "medicoId": 6,
