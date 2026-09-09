@@ -7,7 +7,7 @@ const server = jsonServer.create()
 const router = jsonServer.router('db.json')
 const distPath = path.join(__dirname, 'dist')
 
-// Configurar middlewares para que la raíz estática sea la carpeta dist compilada de Vue 3
+// 1. Configurar middlewares para que la raíz estática sea la carpeta dist compilada de Vue 3
 const middlewares = jsonServer.defaults({
   static: distPath
 })
@@ -15,11 +15,11 @@ const middlewares = jsonServer.defaults({
 server.use(middlewares)
 server.use(jsonServerAuth)
 
-// Vincular router db a la app
+// 2. Vincular router db a la app
 server.db = router.db
 server.use(router)
 
-// Fallback para SPA en Vue Router (HTML5 History Mode)
+// 3. Fallback para SPA en Vue Router (HTML5 History Mode)
 server.use((req, res, next) => {
   const indexPath = path.join(distPath, 'index.html')
   if (fs.existsSync(indexPath)) {

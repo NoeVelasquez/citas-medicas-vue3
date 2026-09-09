@@ -7,7 +7,7 @@
     "build": "vite build",
     "server": "json-server-auth db.json --port 3000 --host 0.0.0.0 -r routes.json",
     "serve": "concurrently \"npm run server\" \"npm run dev\"",
-    "start": "concurrently \"npm run server\" \"npm run dev\"",
+    "start": "node server.js",
     "start:prod": "node server.js",
     "test": "vitest run"
   },
