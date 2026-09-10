@@ -12,7 +12,12 @@ export const useAuthStore = defineStore('auth', () => {
     if (!user.value) return false
     return user.value.rol === 'admin' || user.value.email === 'admin@saludplus.com'
   })
-  const isMedico = computed(() => !isAdmin.value)
+  const isRecepcion = computed(() => {
+    if (!user.value) return false
+    return user.value.rol === 'recepcion' || user.value.email === 'recepcion@saludplus.com'
+  })
+  const isAdminOrRecepcion = computed(() => isAdmin.value || isRecepcion.value)
+  const isMedico = computed(() => !isAdminOrRecepcion.value)
   const currentMedicoId = computed(() => user.value?.medicoId || null)
 
   function initialize() {
@@ -70,6 +75,8 @@ export const useAuthStore = defineStore('auth', () => {
     initialized,
     isAuthenticated,
     isAdmin,
+    isRecepcion,
+    isAdminOrRecepcion,
     isMedico,
     currentMedicoId,
     initialize,

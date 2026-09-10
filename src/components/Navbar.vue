@@ -8,7 +8,7 @@
 
       <nav class="navbar-nav">
         <RouterLink to="/citas" class="nav-link">
-          <span>📅</span> {{ auth.isAdmin ? 'Todas las Citas' : 'Mis Citas Médicas' }}
+          <span>📅</span> {{ auth.isAdminOrRecepcion ? 'Todas las Citas' : 'Mis Citas Médicas' }}
         </RouterLink>
         <RouterLink v-if="auth.isAdmin" to="/medicos" class="nav-link">
           <span>👨‍⚕️</span> Directorio Especialistas
@@ -17,7 +17,12 @@
 
       <div class="navbar-user">
         <div class="user-badge" :title="auth.user?.email">
-          <div class="user-avatar" :style="auth.isAdmin ? '' : 'background: #10b981'">
+          <div
+            class="user-avatar"
+            :style="{
+              background: auth.isAdmin ? 'var(--primary)' : auth.isRecepcion ? '#f59e0b' : '#10b981'
+            }"
+          >
             {{ inicialUsuario }}
           </div>
           <div>
@@ -25,7 +30,7 @@
               {{ auth.user?.name || 'Usuario' }}
             </div>
             <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700">
-              {{ auth.isAdmin ? '👑 Administrador' : '🩺 Especialista' }}
+              {{ auth.isAdmin ? '👑 Administrador' : auth.isRecepcion ? '🛎️ Recepción' : '🩺 Especialista' }}
             </div>
           </div>
         </div>

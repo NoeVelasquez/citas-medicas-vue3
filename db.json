@@ -4,13 +4,15 @@
       "id": 1,
       "email": "admin@saludplus.com",
       "password": "$2a$10$t5pjJm/sExtSHcKRGhkTC.1GyqQT3qGngQ4PlSS23UMOjVIR/oPY2",
-      "name": "Dra. Administradora"
+      "name": "Dra. Administradora",
+      "rol": "admin"
     },
     {
       "id": 2,
       "email": "recepcion@saludplus.com",
       "password": "$2a$10$t5pjJm/sExtSHcKRGhkTC.1GyqQT3qGngQ4PlSS23UMOjVIR/oPY2",
-      "name": "Recepcionista Principal"
+      "name": "Recepcionista Principal",
+      "rol": "recepcion"
     },
     {
       "email": "noemi@test.com",

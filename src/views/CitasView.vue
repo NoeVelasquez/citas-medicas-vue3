@@ -4,10 +4,10 @@
     <div class="page-header">
       <div>
         <h1 class="page-title">
-          <span>📅</span> {{ auth.isAdmin ? 'Gestión Global de Citas' : 'Mis Citas y Pacientes' }}
+          <span>📅</span> {{ auth.isAdmin ? 'Gestión Global de Citas' : auth.isRecepcion ? 'Recepción: Registro y Derivación' : 'Mis Citas y Pacientes' }}
         </h1>
         <p class="page-subtitle">
-          {{ auth.isAdmin ? 'Supervisa y administra las consultas de todos los médicos de la clínica' : `Panel exclusivo de atención para ${medicoActual?.nombre || auth.user?.name}` }}
+          {{ auth.isAdmin ? 'Supervisa y administra las consultas de todos los médicos de la clínica' : auth.isRecepcion ? 'Registra pacientes y deriva las consultas al médico o especialista correspondiente' : `Panel exclusivo de atención para ${medicoActual?.nombre || auth.user?.name}` }}
         </p>
       </div>
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
@@ -15,7 +15,7 @@
           <span>📥</span> Exportar CSV
         </button>
         <button class="btn btn-primary" @click="abrirModal()">
-          <span>➕</span> Nueva Cita
+          <span>➕</span> {{ auth.isRecepcion ? 'Registrar y Derivar Cita' : 'Nueva Cita' }}
         </button>
       </div>
     </div>
@@ -24,8 +24,8 @@
     <div
       class="card"
       :style="{
-        background: auth.isAdmin ? '#f0f9ff' : '#ecfdf5',
-        borderColor: auth.isAdmin ? '#bae6fd' : '#a7f3d0',
+        background: auth.isAdmin ? '#f0f9ff' : auth.isRecepcion ? '#fffbeb' : '#ecfdf5',
+        borderColor: auth.isAdmin ? '#bae6fd' : auth.isRecepcion ? '#fde68a' : '#a7f3d0',
         padding: '0.85rem 1.25rem',
         marginBottom: '1.5rem',
         display: 'flex',
@@ -36,24 +36,24 @@
       }"
     >
       <div style="display: flex; align-items: center; gap: 0.6rem">
-        <span style="font-size: 1.2rem">{{ auth.isAdmin ? '👑' : '🩺' }}</span>
+        <span style="font-size: 1.2rem">{{ auth.isAdmin ? '👑' : auth.isRecepcion ? '🛎️' : '🩺' }}</span>
         <div>
           <strong style="color: var(--text-main); font-size: 0.9rem">
-            {{ auth.isAdmin ? 'Modo Administrador' : 'Modo Especialista Clínico' }}:
+            {{ auth.isAdmin ? 'Modo Administrador' : auth.isRecepcion ? 'Modo Recepción' : 'Modo Especialista Clínico' }}:
           </strong>
           <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 0.35rem">
-            {{ auth.isAdmin ? 'Viendo todas las citas de la clínica con control total de horarios.' : `Viendo únicamente tus pacientes asignados (${medicoActual?.especialidad || 'Especialista'}).` }}
+            {{ auth.isAdmin ? 'Viendo todas las citas de la clínica con control total de horarios.' : auth.isRecepcion ? 'Panel de recepción para admisión de pacientes y asignación/derivación a especialistas.' : `Viendo únicamente tus pacientes asignados (${medicoActual?.especialidad || 'Especialista'}).` }}
           </span>
         </div>
       </div>
       <span
         class="badge"
         :style="{
-          background: auth.isAdmin ? '#e0f2fe' : '#d1fae5',
-          color: auth.isAdmin ? '#0369a1' : '#047857'
+          background: auth.isAdmin ? '#e0f2fe' : auth.isRecepcion ? '#fef3c7' : '#d1fae5',
+          color: auth.isAdmin ? '#0369a1' : auth.isRecepcion ? '#92400e' : '#047857'
         }"
       >
-        {{ auth.isAdmin ? 'Acceso Total' : 'Vista Personalizada' }}
+        {{ auth.isAdmin ? 'Acceso Total' : auth.isRecepcion ? 'Recepción & Derivación' : 'Vista Personalizada' }}
       </span>
     </div>
 
@@ -97,8 +97,8 @@
         placeholder="🔍 Buscar por paciente o motivo de consulta..."
       />
 
-      <!-- Filtro por Médico solo visible para Administrador -->
-      <select v-if="auth.isAdmin" v-model="filtroMedico" class="input">
+      <!-- Filtro por Médico visible para Administrador y Recepción -->
+      <select v-if="auth.isAdminOrRecepcion" v-model="filtroMedico" class="input">
         <option value="">👨‍⚕️ Todos los médicos</option>
         <option v-for="med in medicos" :key="med.id" :value="med.id">
           {{ med.nombre }} ({{ med.especialidad }})
@@ -111,6 +111,13 @@
         <option value="Confirmada">Confirmada</option>
         <option value="Atendida">Atendida</option>
         <option value="Cancelada">Cancelada</option>
+      </select>
+
+      <!-- Selector de Orden (Obs 4: Más recientes primero por defecto) -->
+      <select v-model="criterioOrden" class="input" title="Criterio de ordenamiento">
+        <option value="reciente">🔽 Más recientes primero</option>
+        <option value="antiguo">🔼 Más antiguas primero</option>
+        <option value="paciente">🔤 Por Paciente (A-Z)</option>
       </select>
 
       <!-- Selector de Vista (Tabla vs Tarjetas) -->
@@ -134,7 +141,7 @@
       </div>
 
       <button
-        v-if="busqueda || filtroMedico || filtroEstado"
+        v-if="busqueda || filtroMedico || filtroEstado || criterioOrden !== 'reciente'"
         class="btn btn-ghost btn-sm"
         @click="limpiarFiltros"
       >
@@ -151,7 +158,7 @@
       <div class="empty-icon">📂</div>
       <h3>No se encontraron citas médicas</h3>
       <p>
-        {{ auth.isAdmin ? 'Prueba ajustando los filtros de búsqueda o registra una nueva cita.' : 'No tienes citas agendadas con los filtros actuales.' }}
+        {{ auth.isAdminOrRecepcion ? 'Prueba ajustando los filtros de búsqueda o registra una nueva cita para derivación.' : 'No tienes citas agendadas con los filtros actuales.' }}
       </p>
     </div>
 
@@ -162,9 +169,9 @@
           <thead>
             <tr>
               <th>Paciente</th>
-              <th>Médico Especialista</th>
+              <th>Médico Especialista (Derivado)</th>
               <th>Fecha y Hora</th>
-              <th>Motivo de Consulta</th>
+              <th>Motivo / Conclusión</th>
               <th>Estado Rápido</th>
               <th>Costo</th>
               <th style="text-align: right">Acciones</th>
@@ -173,12 +180,22 @@
           <tbody>
             <tr v-for="cita in citasFiltradas" :key="cita.id">
               <td>
-                <RouterLink
-                  :to="`/citas/${cita.id}`"
-                  style="text-decoration: none; color: var(--primary); font-weight: 700"
-                >
-                  {{ cita.paciente }}
-                </RouterLink>
+                <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap">
+                  <RouterLink
+                    :to="`/citas/${cita.id}`"
+                    style="text-decoration: none; color: var(--primary); font-weight: 700"
+                  >
+                    {{ cita.paciente }}
+                  </RouterLink>
+                  <span
+                    v-if="cita.esRevision || (cita.motivo && cita.motivo.toLowerCase().includes('revisión'))"
+                    class="badge"
+                    style="background: #ede9fe; color: #6d28d9; font-size: 0.7rem; padding: 0.15rem 0.45rem"
+                    title="Cita de Revisión Periódica / Control"
+                  >
+                    🔄 Revisión
+                  </span>
+                </div>
                 <div style="font-size: 0.75rem; color: var(--text-muted)">Cita #{{ cita.id }}</div>
               </td>
               <td>
@@ -194,15 +211,18 @@
                     </div>
                   </div>
                 </div>
-                <span v-else style="color: var(--text-muted); font-size: 0.85rem">Sin médico</span>
+                <span v-else style="color: var(--text-muted); font-size: 0.85rem">Sin especialista asignado</span>
               </td>
               <td>
                 <div style="font-weight: 700">{{ formatearFecha(cita.fecha) }}</div>
                 <div style="font-size: 0.8rem; color: var(--text-muted)">⏰ {{ cita.hora }}</div>
               </td>
               <td>
-                <div style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis" :title="cita.motivo">
-                  {{ cita.motivo }}
+                <div style="max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis" :title="cita.motivo">
+                  <strong>Motivo:</strong> {{ cita.motivo }}
+                </div>
+                <div v-if="cita.conclusion" style="font-size: 0.75rem; color: #047857; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis" :title="cita.conclusion">
+                  ✅ <strong>Conclusión:</strong> {{ cita.conclusion }}
                 </div>
               </td>
               <td>
@@ -229,10 +249,17 @@
                   <RouterLink
                     :to="`/citas/${cita.id}`"
                     class="btn btn-ghost btn-sm"
-                    title="Ver detalle completo"
+                    title="Ver detalle y registrar conclusión"
                   >
                     👁️
                   </RouterLink>
+                  <button
+                    class="btn btn-ghost btn-sm"
+                    title="Programar Revisión Periódica / Control"
+                    @click="abrirModalRevision(cita)"
+                  >
+                    🔄
+                  </button>
                   <button
                     class="btn btn-ghost btn-sm"
                     title="Editar cita"
@@ -260,12 +287,21 @@
       <div v-for="cita in citasFiltradas" :key="cita.id" class="item-card">
         <div class="item-card-header">
           <div>
-            <RouterLink
-              :to="`/citas/${cita.id}`"
-              style="text-decoration: none; color: var(--text-main); font-weight: 800; font-size: 1.1rem"
-            >
-              {{ cita.paciente }}
-            </RouterLink>
+            <div style="display: flex; align-items: center; gap: 0.4rem">
+              <RouterLink
+                :to="`/citas/${cita.id}`"
+                style="text-decoration: none; color: var(--text-main); font-weight: 800; font-size: 1.1rem"
+              >
+                {{ cita.paciente }}
+              </RouterLink>
+              <span
+                v-if="cita.esRevision || (cita.motivo && cita.motivo.toLowerCase().includes('revisión'))"
+                class="badge"
+                style="background: #ede9fe; color: #6d28d9; font-size: 0.7rem; padding: 0.15rem 0.45rem"
+              >
+                🔄 Revisión
+              </span>
+            </div>
             <div style="font-size: 0.8rem; color: var(--text-muted)">
               📅 {{ formatearFecha(cita.fecha) }} • ⏰ {{ cita.hora }}
             </div>
@@ -290,7 +326,10 @@
           </div>
 
           <p style="font-size: 0.85rem; line-height: 1.4; color: var(--text-muted); margin-top: 0.35rem">
-            {{ cita.motivo }}
+            <strong>Motivo:</strong> {{ cita.motivo }}
+          </p>
+          <p v-if="cita.conclusion" style="font-size: 0.8rem; line-height: 1.4; color: #047857; margin-top: 0.35rem; background: #ecfdf5; padding: 0.35rem 0.5rem; border-radius: var(--radius-sm)">
+            ✅ <strong>Conclusión:</strong> {{ cita.conclusion }}
           </p>
         </div>
 
@@ -302,6 +341,9 @@
             <RouterLink :to="`/citas/${cita.id}`" class="btn btn-ghost btn-sm" title="Ver detalle">
               👁️
             </RouterLink>
+            <button class="btn btn-ghost btn-sm" title="Programar Revisión Periódica" @click="abrirModalRevision(cita)">
+              🔄
+            </button>
             <button class="btn btn-ghost btn-sm" title="Editar" @click="abrirModal(cita)">
               ✏️
             </button>
@@ -313,12 +355,14 @@
       </div>
     </div>
 
-    <!-- Modal para Crear / Editar Cita -->
+    <!-- Modal para Crear / Editar Cita / Agendar Revisión -->
     <div v-if="modalVisible" class="modal-overlay" @click.self="cerrarModal">
       <div class="modal">
         <div class="modal-header">
           <h2 class="modal-title">
-            {{ form.id ? '✏️ Editar Cita Médica' : '➕ Nueva Cita Médica' }}
+            <span v-if="modoRevision">🔄 Programar Revisión Periódica / Control</span>
+            <span v-else-if="form.id">✏️ Editar Cita Médica</span>
+            <span v-else>➕ {{ auth.isRecepcion ? 'Registrar y Derivar Cita Médica' : 'Nueva Cita Médica' }}</span>
           </h2>
           <button class="modal-close" @click="cerrarModal">✕</button>
         </div>
@@ -327,30 +371,74 @@
           <span>⚠️</span> {{ errorModal }}
         </div>
 
+        <!-- Banner de Revisión Periódica -->
+        <div
+          v-if="modoRevision"
+          style="background: #ede9fe; border: 1px solid #ddd6fe; padding: 0.75rem 1rem; border-radius: var(--radius); margin-bottom: 1rem; font-size: 0.85rem; color: #5b21b6"
+        >
+          <strong>🩺 Revisión Periódica para:</strong> {{ form.paciente }}
+          <div style="margin-top: 0.4rem; display: flex; gap: 0.4rem; flex-wrap: wrap">
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              style="font-size: 0.75rem; background: white"
+              @click="fijarFechaRevision(7)"
+            >
+              +7 Días (Control Rápido)
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              style="font-size: 0.75rem; background: white"
+              @click="fijarFechaRevision(15)"
+            >
+              +15 Días (Quincenal)
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              style="font-size: 0.75rem; background: white"
+              @click="fijarFechaRevision(30)"
+            >
+              +30 Días (1 Mes)
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              style="font-size: 0.75rem; background: white"
+              @click="fijarFechaRevision(90)"
+            >
+              +90 Días (Trimestral)
+            </button>
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label">Nombre del Paciente *</label>
           <input
             v-model="form.paciente"
             class="input"
             placeholder="Ej: Juan Carlos Morales"
+            :disabled="modoRevision"
           />
         </div>
 
         <div class="form-grid">
           <div class="form-group">
-            <label class="form-label">Médico Especialista *</label>
+            <label class="form-label">
+              {{ auth.isRecepcion ? 'Médico Especialista (Derivar a) *' : 'Médico Especialista *' }}
+            </label>
             <select
               v-model="form.medicoId"
               class="input"
-              :disabled="!auth.isAdmin"
             >
-              <option :value="null" disabled>Seleccione un médico</option>
+              <option :value="null" disabled>Seleccione un especialista</option>
               <option v-for="med in medicos" :key="med.id" :value="med.id">
                 {{ med.nombre }} ({{ med.especialidad }})
               </option>
             </select>
-            <small v-if="!auth.isAdmin" style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.25rem">
-              Asignado automáticamente a su perfil médico
+            <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.25rem">
+              {{ auth.isRecepcion ? '🛎️ Recepción deriva al médico seleccionado.' : 'Especialista asignado a la atención.' }}
             </small>
           </div>
 
@@ -400,11 +488,23 @@
           ></textarea>
         </div>
 
+        <div v-if="form.id && form.estado === 'Atendida'" class="form-group">
+          <label class="form-label">📝 Conclusión Médica Registrada</label>
+          <textarea
+            v-model="form.conclusion"
+            class="input"
+            rows="2"
+            placeholder="Diagnóstico y observaciones del médico especialista..."
+            style="resize: vertical"
+          ></textarea>
+        </div>
+
         <div class="form-actions">
           <button class="btn btn-secondary" @click="cerrarModal">Cancelar</button>
           <button class="btn btn-primary" :disabled="guardando" @click="guardarCita">
             <span v-if="guardando">Guardando...</span>
-            <span v-else>{{ form.id ? 'Actualizar Cita' : 'Crear Cita' }}</span>
+            <span v-else-if="modoRevision">🔄 Programar Revisión</span>
+            <span v-else>{{ form.id ? 'Actualizar Cita' : (auth.isRecepcion ? 'Derivar y Guardar Cita' : 'Crear Cita') }}</span>
           </button>
         </div>
       </div>
@@ -443,7 +543,12 @@ import { useAuthStore } from '../stores/auth'
 import { useToastStore } from '../stores/toast'
 import api from '../lib/axios'
 import ConfirmModal from '../components/ConfirmModal.vue'
-import { evaluarTransicionEstado, detectarConflictoHorario } from '../lib/validation'
+import {
+  evaluarTransicionEstado,
+  detectarConflictoHorario,
+  ordenarCitas,
+  calcularFechaRevision
+} from '../lib/validation'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -455,13 +560,15 @@ const cargando = ref(true)
 const guardando = ref(false)
 const tipoVista = ref('tabla') // 'tabla' o 'tarjetas'
 
-// Estados de Filtro y Búsqueda
+// Estados de Filtro, Búsqueda y Orden (Obs 4: más reciente primero por defecto)
 const busqueda = ref('')
 const filtroMedico = ref('')
 const filtroEstado = ref('')
+const criterioOrden = ref('reciente')
 
-// Modal Crear/Editar
+// Modal Crear/Editar y Revisiones
 const modalVisible = ref(false)
+const modoRevision = ref(false)
 const errorModal = ref('')
 
 // Modal Confirmación Eliminación
@@ -526,7 +633,7 @@ async function cargarDatos() {
 
 // ── Filtrado Base por Rol ───────────────────
 const citasFiltradasPorRol = computed(() => {
-  if (auth.isAdmin) {
+  if (auth.isAdminOrRecepcion) {
     return citas.value
   }
 
@@ -538,20 +645,23 @@ const citasFiltradasPorRol = computed(() => {
   return citas.value.filter((c) => c.medicoId == targetMedicoId)
 })
 
-// ── Filtrado con Buscador y Filtros ─────────
+// ── Filtrado con Buscador, Filtros y Ordenamiento (Obs 4) ─────────
 const citasFiltradas = computed(() => {
-  return citasFiltradasPorRol.value.filter((c) => {
+  const filtradas = citasFiltradasPorRol.value.filter((c) => {
     const query = busqueda.value.toLowerCase().trim()
     const matchBusqueda =
       !query ||
       c.paciente.toLowerCase().includes(query) ||
-      (c.motivo && c.motivo.toLowerCase().includes(query))
+      (c.motivo && c.motivo.toLowerCase().includes(query)) ||
+      (c.conclusion && c.conclusion.toLowerCase().includes(query))
 
     const matchMedico = !filtroMedico.value || c.medicoId == filtroMedico.value
     const matchEstado = !filtroEstado.value || c.estado === filtroEstado.value
 
     return matchBusqueda && matchMedico && matchEstado
   })
+
+  return ordenarCitas(filtradas, criterioOrden.value)
 })
 
 const totalIngresos = computed(() => {
@@ -592,6 +702,7 @@ function limpiarFiltros() {
   busqueda.value = ''
   filtroMedico.value = ''
   filtroEstado.value = ''
+  criterioOrden.value = 'reciente'
 }
 
 // ── Transiciones de Estado con Máquina de Estados (QA Edge Case) ──
@@ -645,7 +756,7 @@ function exportarCSV() {
     return
   }
 
-  const cabeceras = ['ID', 'Paciente', 'Medico', 'Especialidad', 'Fecha', 'Hora', 'Estado', 'Costo', 'Motivo']
+  const cabeceras = ['ID', 'Paciente', 'Medico', 'Especialidad', 'Fecha', 'Hora', 'Estado', 'Costo', 'Motivo', 'Conclusión']
   const filas = citasFiltradas.value.map((c) => {
     const med = getMedico(c.medicoId)
     return [
@@ -657,7 +768,8 @@ function exportarCSV() {
       c.hora,
       c.estado,
       c.costo,
-      `"${(c.motivo || '').replace(/"/g, '""')}"`
+      `"${(c.motivo || '').replace(/"/g, '""')}"`,
+      `"${(c.conclusion || '').replace(/"/g, '""')}"`
     ]
   })
 
@@ -666,20 +778,47 @@ function exportarCSV() {
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.setAttribute('href', url)
-  link.setAttribute('download', `citas_${auth.isAdmin ? 'todas' : 'especialista'}_${new Date().toISOString().slice(0, 10)}.csv`)
+  link.setAttribute('download', `citas_${auth.isAdminOrRecepcion ? 'todas' : 'especialista'}_${new Date().toISOString().slice(0, 10)}.csv`)
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
   toast.success('Reporte CSV exportado exitosamente')
 }
 
+// ── Revisiones Periódicas (Obs 3) ────────────
+function fijarFechaRevision(dias) {
+  form.value.fecha = calcularFechaRevision(form.value.fecha, dias)
+  toast.info(`Fecha de revisión ajustada a +${dias} días (${formatearFecha(form.value.fecha)})`)
+}
+
+function abrirModalRevision(cita) {
+  modoRevision.value = true
+  const fechaSugerida = calcularFechaRevision(cita.fecha || new Date().toISOString().slice(0, 10), 15)
+  form.value = {
+    id: null,
+    paciente: cita.paciente,
+    medicoId: cita.medicoId || (medicos.value.length > 0 ? medicos.value[0].id : null),
+    fecha: fechaSugerida,
+    hora: cita.hora || '10:00',
+    motivo: `Revisión periódica y control de evolución (Seguimiento cita #${cita.id})`,
+    estado: 'Pendiente',
+    costo: Math.round((Number(cita.costo) || 150) * 0.8), // Tarifa preferencial de revisión
+    esRevision: true,
+    citaPadreId: cita.id,
+    conclusion: ''
+  }
+  errorModal.value = ''
+  modalVisible.value = true
+}
+
 // ── Modal & CRUD ────────────────────────────
 function abrirModal(cita = null) {
+  modoRevision.value = false
   if (cita) {
     form.value = { ...cita }
   } else {
     form.value = formVacio()
-    if (auth.isAdmin && medicos.value.length > 0) {
+    if (auth.isAdminOrRecepcion && medicos.value.length > 0) {
       form.value.medicoId = medicos.value[0].id
     } else if (medicoActual.value) {
       form.value.medicoId = medicoActual.value.id
@@ -691,6 +830,7 @@ function abrirModal(cita = null) {
 
 function cerrarModal() {
   modalVisible.value = false
+  modoRevision.value = false
 }
 
 async function guardarCita() {
@@ -699,7 +839,7 @@ async function guardarCita() {
     return
   }
   if (!form.value.medicoId) {
-    errorModal.value = 'Debe seleccionar un médico especialista.'
+    errorModal.value = 'Debe seleccionar un médico especialista para la derivación.'
     return
   }
   if (!form.value.fecha || !form.value.hora) {
@@ -735,7 +875,10 @@ async function guardarCita() {
       hora: form.value.hora,
       motivo: form.value.motivo.trim(),
       estado: form.value.estado,
-      costo: Number(form.value.costo) || 0
+      costo: Number(form.value.costo) || 0,
+      conclusion: form.value.conclusion ? form.value.conclusion.trim() : (form.value.id ? form.value.conclusion : null),
+      esRevision: form.value.esRevision || false,
+      citaPadreId: form.value.citaPadreId || null
     }
 
     if (form.value.id) {
@@ -743,7 +886,14 @@ async function guardarCita() {
       toast.success('Cita médica actualizada correctamente')
     } else {
       await api.post('/citas', payload)
-      toast.success('Nueva cita médica agendada con éxito')
+      if (modoRevision.value) {
+        toast.success(`Revisión periódica agendada para ${payload.paciente} el ${formatearFecha(payload.fecha)}`)
+      } else if (auth.isRecepcion) {
+        const med = getMedico(payload.medicoId)
+        toast.success(`Cita registrada y derivada exitosamente a ${med?.nombre || 'Especialista'}`)
+      } else {
+        toast.success('Nueva cita médica agendada con éxito')
+      }
     }
 
     await cargarDatos()

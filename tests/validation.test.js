@@ -4,6 +4,8 @@ import {
   detectarConflictoHorario,
   esFechaEnElPasado,
   esEmailValido,
+  ordenarCitas,
+  calcularFechaRevision,
   ESTADOS_VALIDOS
 } from '../src/lib/validation'
 
@@ -103,9 +105,46 @@ describe('🧪 QA Suite: Prevención de Conflictos de Horario (Double Booking)',
   })
 })
 
+describe('🧪 QA Suite: Obs 4 - Ordenamiento Cronológico (Más Recientes Primero)', () => {
+  const citasDesordenadas = [
+    { id: 1, paciente: 'Carlos', fecha: '2026-09-10', hora: '09:00' },
+    { id: 2, paciente: 'Beatriz', fecha: '2026-09-20', hora: '11:00' },
+    { id: 3, paciente: 'Alberto', fecha: '2026-09-15', hora: '14:00' }
+  ]
+
+  it('debe ordenar por defecto del más reciente al más antiguo (descendente)', () => {
+    const resultado = ordenarCitas(citasDesordenadas, 'reciente')
+    expect(resultado[0].fecha).toBe('2026-09-20')
+    expect(resultado[1].fecha).toBe('2026-09-15')
+    expect(resultado[2].fecha).toBe('2026-09-10')
+  })
+
+  it('debe permitir ordenar del más antiguo al más reciente si se solicita', () => {
+    const resultado = ordenarCitas(citasDesordenadas, 'antiguo')
+    expect(resultado[0].fecha).toBe('2026-09-10')
+    expect(resultado[2].fecha).toBe('2026-09-20')
+  })
+
+  it('debe permitir ordenar alfabéticamente por paciente', () => {
+    const resultado = ordenarCitas(citasDesordenadas, 'paciente')
+    expect(resultado[0].paciente).toBe('Alberto')
+    expect(resultado[1].paciente).toBe('Beatriz')
+    expect(resultado[2].paciente).toBe('Carlos')
+  })
+})
+
+describe('🧪 QA Suite: Obs 3 - Cálculo de Revisiones Periódicas', () => {
+  it('debe calcular la fecha exacta sumando los días indicados a la fecha base', () => {
+    expect(calcularFechaRevision('2026-09-10', 7)).toBe('2026-09-17')
+    expect(calcularFechaRevision('2026-09-10', 15)).toBe('2026-09-25')
+    expect(calcularFechaRevision('2026-09-10', 30)).toBe('2026-10-10')
+  })
+})
+
 describe('🧪 QA Suite: Validaciones de Fechas y Correos', () => {
   it('debe validar correos electrónicos válidos e inválidos', () => {
     expect(esEmailValido('admin@saludplus.com')).toBe(true)
+    expect(esEmailValido('recepcion@saludplus.com')).toBe(true)
     expect(esEmailValido('noemi.vera@clinica.edu.bo')).toBe(true)
     expect(esEmailValido('correo_invalido')).toBe(false)
     expect(esEmailValido('sin_arroba.com')).toBe(false)

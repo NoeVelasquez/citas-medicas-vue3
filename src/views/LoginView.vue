@@ -66,6 +66,14 @@
           <button
             type="button"
             class="btn btn-secondary btn-sm"
+            style="font-size: 0.75rem; background: #fef3c7; color: #92400e; border-color: #fde68a"
+            @click="llenarCredenciales('recepcion@saludplus.com', '123456')"
+          >
+            🛎️ Recepción (Derivar Citas)
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
             style="font-size: 0.75rem"
             @click="llenarCredenciales('valeria.mendoza@saludplus.com', '123456')"
           >

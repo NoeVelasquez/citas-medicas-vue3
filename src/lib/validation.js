@@ -94,3 +94,47 @@ export function esEmailValido(email) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return regex.test(email.trim())
 }
+
+/**
+ * Calcula la fecha sugerida para una revisión periódica sumando días a una fecha base
+ * @param {string} fechaBaseStr - YYYY-MM-DD
+ * @param {number} dias - Días a sumar (7, 15, 30, 90)
+ * @returns {string} - YYYY-MM-DD
+ */
+export function calcularFechaRevision(fechaBaseStr, dias = 7) {
+  const base = fechaBaseStr ? new Date(fechaBaseStr + 'T00:00:00') : new Date()
+  const fechaFutura = new Date(base.getTime() + dias * 24 * 60 * 60 * 1000)
+  return fechaFutura.toISOString().slice(0, 10)
+}
+
+/**
+ * Ordena un listado de citas cronológicamente (por defecto más reciente primero)
+ * @param {Array} lista - Array de citas
+ * @param {'reciente'|'antiguo'|'paciente'} orden - Criterio de orden
+ * @returns {Array} - Array ordenado
+ */
+export function ordenarCitas(lista = [], orden = 'reciente') {
+  const copia = [...lista]
+  if (orden === 'reciente') {
+    return copia.sort((a, b) => {
+      const fechaHoraA = `${a.fecha || ''} ${a.hora || ''}`
+      const fechaHoraB = `${b.fecha || ''} ${b.hora || ''}`
+      if (fechaHoraB !== fechaHoraA) {
+        return fechaHoraB.localeCompare(fechaHoraA)
+      }
+      return (b.id || 0) - (a.id || 0)
+    })
+  } else if (orden === 'antiguo') {
+    return copia.sort((a, b) => {
+      const fechaHoraA = `${a.fecha || ''} ${a.hora || ''}`
+      const fechaHoraB = `${b.fecha || ''} ${b.hora || ''}`
+      if (fechaHoraA !== fechaHoraB) {
+        return fechaHoraA.localeCompare(fechaHoraB)
+      }
+      return (a.id || 0) - (b.id || 0)
+    })
+  } else if (orden === 'paciente') {
+    return copia.sort((a, b) => (a.paciente || '').localeCompare(b.paciente || ''))
+  }
+  return copia
+}
