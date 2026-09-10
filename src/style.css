@@ -768,46 +768,72 @@ tr:hover td {
 /* Responsive Design (Mobile, Tablet & PC) */
 @media (max-width: 768px) {
   .main-content {
-    padding: 1.25rem 1rem;
+    padding: 1rem 0.75rem;
   }
 
+  /* Navbar Mobile Optimizado */
   .navbar-container {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 0.85rem;
+    display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
   }
 
   .navbar-brand {
     font-size: 1.15rem;
   }
 
-  .navbar-nav {
-    order: 3;
-    width: 100%;
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding-bottom: 0.25rem;
-  }
-
   .navbar-user {
-    gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 
   .user-badge {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .navbar-nav {
+    width: 100%;
+    order: 3;
+    display: flex;
+    gap: 0.35rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-link {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.825rem;
+    flex: 1;
+    justify-content: center;
   }
 
   .page-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
+    margin-bottom: 1.25rem;
   }
 
   .page-title {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
   }
 
+  .page-header > div:last-child {
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .page-header > div:last-child .btn {
+    flex: 1;
+  }
+
+  /* Filtros en Móvil */
   .filters-bar {
     flex-direction: column;
     align-items: stretch;
@@ -832,6 +858,87 @@ tr:hover td {
     justify-content: center;
   }
 
+  /* Transformación de Tabla a Cards Nativas en Móvil */
+  .table-container {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .table-wrap {
+    overflow: visible;
+  }
+
+  table, tbody, tr, td {
+    display: block;
+    width: 100%;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.15rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  tbody tr td {
+    padding: 0 !important;
+    border-bottom: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  tbody tr td:first-child {
+    border-bottom: 1px solid var(--border) !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  tbody tr td:nth-child(4) {
+    display: block;
+  }
+
+  tbody tr td:nth-child(4) > div {
+    max-width: 100% !important;
+    white-space: normal !important;
+  }
+
+  /* Fila de Acciones al fondo de la card móvil */
+  tbody tr td:last-child {
+    padding-top: 0.75rem !important;
+    border-top: 1px solid var(--border) !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  tbody tr td:last-child .actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between !important;
+    gap: 0.4rem;
+  }
+
+  tbody tr td:last-child .actions .btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: 0.5rem 0.4rem;
+    font-size: 0.95rem;
+  }
+
   .modal {
     padding: 1.25rem 1rem;
     max-height: 92vh;
@@ -848,25 +955,31 @@ tr:hover td {
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: 0.65rem;
   }
 
   .stat-card {
-    padding: 0.85rem 1rem;
+    padding: 0.75rem 0.85rem;
+    gap: 0.65rem;
   }
 
   .stat-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 1.3rem;
+    width: 38px;
+    height: 38px;
+    font-size: 1.15rem;
   }
 
   .stat-number {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
   }
 
   .cards-grid {
     grid-template-columns: 1fr;
+    gap: 0.85rem;
   }
 
   .auth-card {
@@ -880,26 +993,7 @@ tr:hover td {
   }
 
   .page-title {
-    font-size: 1.25rem;
-  }
-
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .page-header > div:last-child {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .page-header > div:last-child .btn {
-    width: 100%;
-  }
-
-  .actions {
-    flex-wrap: wrap;
+    font-size: 1.2rem;
   }
 }
 

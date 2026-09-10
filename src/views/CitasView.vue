@@ -558,7 +558,7 @@ const citas = ref([])
 const medicos = ref([])
 const cargando = ref(true)
 const guardando = ref(false)
-const tipoVista = ref('tabla') // 'tabla' o 'tarjetas'
+const tipoVista = ref(typeof window !== 'undefined' && window.innerWidth < 768 ? 'tarjetas' : 'tabla')
 
 // Estados de Filtro, Búsqueda y Orden (Obs 4: más reciente primero por defecto)
 const busqueda = ref('')
